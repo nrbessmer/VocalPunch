@@ -33,6 +33,7 @@ bool VocalPunchProcessor::isBusesLayoutSupported (const BusesLayout& l) const
 
 void VocalPunchProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    monoScratchBuf.assign ((size_t) juce::jmax (1, samplesPerBlock) * 2, 0.0f);
     chain.prepare (sampleRate, juce::jmax (1, samplesPerBlock));
 }
 
@@ -51,9 +52,9 @@ void VocalPunchProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
 
     float* L = buffer.getWritePointer (0);
     float* R = nOut > 1 ? buffer.getWritePointer (1) : nullptr;
-    juce::HeapBlock<float> tmp;
-    if (R == nullptr) { tmp.allocate ((size_t) n, true); R = tmp.get(); }
-    if (nIn < 2 || R == tmp.get()) std::copy (L, L + n, R);   // mono source: feed both sides
+    const bool monoOut = R == nullptr;
+    if (monoOut) R = monoScratch (n);                          // preallocated: no audio-thread malloc
+    if (nIn < 2 || monoOut) std::copy (L, L + n, R);           // mono source: feed both sides
 
     chain.process (L, R, n, reader.read(), bpm);
 

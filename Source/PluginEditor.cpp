@@ -16,6 +16,7 @@ VocalPunchEditor::VocalPunchEditor (VocalPunchProcessor& p)
       pingPong (p.apvts, "delay_pp", "PING-PONG", Col::cyan, "Echoes bounce between left and right."),
       bypass (p.apvts, "bypass", "BYPASS", Col::amber, "Compare with the untouched vocal.")
 {
+    lnf.setAccent (Col::pink);
     setLookAndFeel (&lnf);
     logo = juce::ImageCache::getFromMemory (BinaryData::TullyLogo_png, BinaryData::TullyLogo_pngSize);
     productLogo = juce::ImageCache::getFromMemory (BinaryData::VocalPunchLogo_png, BinaryData::VocalPunchLogo_pngSize);
@@ -88,9 +89,9 @@ void VocalPunchEditor::timerCallback()
 
 void VocalPunchEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (Col::bg);
+    neon::paintBackdrop (g, getLocalBounds(), Col::pink, backdrop);
     tui::paintWatermark (g, productLogo, getLocalBounds(), 0.20f);
-    tui::paintBrandHeader (g, getWidth(), 76, productLogo, logo, "VOCALPUNCH", "ONE-KNOB VOCAL CHAINS", Col::pink);
+    tui::paintBrandHeader (g, getWidth(), 76, productLogo, logo, "VOCALPUNCH", "ONE-KNOB VOCAL CHAINS", Col::pink, presetBar.getX() - 10);
     tui::paintGlassSection (g, rMacro, "STYLE MACROS", Col::pink);
     tui::paintGlassSection (g, rCurve, "VOICE CURVE", Col::amber);
     tui::paintGlassSection (g, rOut, "OUTPUT", Col::text);
