@@ -5,6 +5,7 @@
   ==============================================================================
 */
 #include "PluginEditor.h"
+#include "TullyLicence.h"
 #include "BinaryData.h"
 
 namespace Col = tui::Col;
@@ -72,6 +73,8 @@ VocalPunchEditor::VocalPunchEditor (VocalPunchProcessor& p)
 
     setSize (1080, 700);
     startTimerHz (30);
+
+    tully::addActivation (*this);   // activation screen until this Mac is licensed
 }
 
 VocalPunchEditor::~VocalPunchEditor() { stopTimer(); setLookAndFeel (nullptr); }
